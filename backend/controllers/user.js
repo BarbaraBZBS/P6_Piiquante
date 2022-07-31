@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 
 const User = require('../models/User');
 
+
 exports.signup = (req, res, next) => {
     bcrypt.hash(req.body.password, 10)
     .then(hash => {
@@ -21,12 +22,12 @@ exports.login = (req, res, next) => {
     User.findOne({ email: req.body.email })
     .then(user => {
         if (!user) {
-            return res.status(401).json({ message: 'identifiant et/ou mot de passe incorrect(s)' });
+            return res.status(401).json({ error: 'incorrect login informations !' });
         }
         bcrypt.compare(req.body.password, user.password)
             .then(valid => {
                 if (!valid) {
-                    return res.status(401).json({ message: 'identifiant et/ou mot de passe incorrect(s)' });
+                    return res.status(401).json({ error: 'incorrect login informations !' });
                 }
                 res.status(200).json({
                     userId: user._id,

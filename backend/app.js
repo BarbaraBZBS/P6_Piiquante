@@ -1,5 +1,6 @@
 const express = require('express');
 const helmet = require('helmet');
+const mongoSanitize = require('express-mongo-sanitize');
 const app = express();
 
 const dotenv = require('dotenv');
@@ -22,6 +23,7 @@ mongoose.connect(process.env.MONGO_URI,
     .catch(() => console.log('Connection to MongoDB failed !'));
 
 app.use(express.json());
+app.use(mongoSanitize());
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -37,11 +39,12 @@ const limiter = rateLimit({
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
+
+app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
+app.use(limiter);
+
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/api/sauces', sauceRoutes);
 app.use('/api/auth', userRoutes);
-
-app.use(helmet());
-app.use(limiter)
 
 module.exports = app;
