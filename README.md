@@ -1,5 +1,5 @@
 ---
-permalink: frontend/index.html
+permalink: frontend/src/index.html
 ---
 
 
